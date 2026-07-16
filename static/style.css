@@ -1,0 +1,62 @@
+:root {
+    --bauhaus-red: #E03C31;
+    --bauhaus-blue: #00509E;
+    --bauhaus-yellow: #F7D002;
+    --glass-bg: rgba(255, 255, 255, 0.15);
+    --glass-border: rgba(255, 255, 255, 0.3);
+} 
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Seoge UI', Roboto, Helvetica, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+     background-image:
+            radial-gradient(circle at 15% 20%, var(--bauhaus-red) 120px, transparent 121px),
+            radial-gradient(circle at 85% 80%, var(--bauhaus-blue) 180px, transparent 181px),
+            linear-gradient(45deg, transparent 40%, var(--bauhaus-yellow) 40%, var(--bauhaus-yellow) 60%, transparent 60%);
+    background-attachment: fixed;
+}
+/*glassmorphism graphic style innit */
+.glass-container {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 4rem; width: 80%; max-width: 900px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+}
+header {
+    text-align: center; margin-bottom: 3rem;
+}
+header h1 {
+    font-size: 3.5rem;
+    font-weight: 900;
+    margin: 0; letter-spacing: -2px;
+    color: #111;
+}
+.module-grid {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.glass-card {
+    flex: 1;
+    min-width: 220px;
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid var(--glass-border); border-radius: 15px;
+    padding: 2rem; text-decoration: none; color: #111; text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+.glass-card:hover {
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+.glass-card h2 { margin-top: 0; }
