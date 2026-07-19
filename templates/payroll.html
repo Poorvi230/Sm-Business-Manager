@@ -2,39 +2,40 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Payroll - Business Suite</title>
+        <title>SECURE THE BAG</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     </head>
     <body class="{{ brand.theme }}">
         <div class="glass-container">
             <header>
-                <h1> PAYROLL CALC</h1>
-                <a href="/" style="color: #111; text-decoration: none; font-weight: bold;">Back to Dashboard</a>
+                <h1>secure the bag</h1>
+                <a href="/" style="color: #111; font-weight: bold;">Back to Base</a>
             </header>
 <!--Input form cuz we need it dude-->
-             <div class="glass-card" style="margin-bottom: 2rem; text-align: left;">
-                <h2 style="margin-top: 0;">Calculate Weekly Pay</h2>
+             <div class="glass-card" style="text-align: left;">
+                <h2>Who are we Paying?</h2>
                 <form action="/payroll" method="POST" style="display: flex; gap: 10px;">
-                    <input type="text" name="emp_name" placeholder="Employee Name" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; flex: 2;">
-                    <input type="number" step="0.5" name="hours" placeholder="Hours Worked" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; flex: 1;">
-                    <input type="number" step="0.01" name="rate" placeholder="Hourly Rate ($)" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; flex: 1;">
-                    <button type="submit" style="padding: 10px 20px; border-radius: 5px; border: none; background-color: var(--bauhaus-red); color: white; cursor: pointer;">Calculate</button>
+                    <input type="text" name="emp_name" placeholder="Employee Name" required style="flex: 2;">
+                    <input type="number" step="0.5" name="hours" placeholder="Hours" required style="flex: 1;">
+                    <input type="number" step="0.01" name="rate" placeholder="Rate ($)" required style="flex: 1;">
+                    <button type="submit">drop cash$$$$</button>
                 </form>
-            </div>
-            {% if stub %}
-            <div class="glass-card" style="text-align: left; background: rgba(255, 255, 255, 0.4);">
-                <h2 style="margin-top: 0;">Pay Stub for: {{ stub.name }}</h2>
-                <p><strong>Regular Pay:</strong>${{ stub.regular_pay }}</p>
-                <p><strong>Overtime Pay:</strong>${{ stub.overtime_pay }}</p>
-                <hr style="border: 1px solid rgba(0,0,0,0.1);">
-                <p><strong>Gross Earnings:</strong> ${{ stub.gross_pay }}</p>
-                <p style="color: #E03C31;"><strong>Estimated Tax Witholding (15%):</strong> -${{ stub.tax }}</p>
-                <hr style="border: 1px solid rgba(0,0,0,0.1)">
-                
-                <h3 style="color: #00509E;">Net Take-Home Pay: ${{ stub.net_pay }}</h3>
-            </div>
-            {% endif %}
-
+         </div>
+        <table>
+                <tr>
+                    <th>receipt #</th>
+                    <th>employee</th>
+                    <th>net take-home</th>
+                </tr>
+                {% for stub in history %}
+                <tr>
+                    <td>#{{ stub.id }}</td>
+                    <td style="font-weight: bold;">{{ stub.name }}</td>
+                    <td>${{ stub.net_pay }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        
         </div>
     </body>
 </html>

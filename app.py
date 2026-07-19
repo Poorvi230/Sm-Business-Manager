@@ -2,6 +2,12 @@ from flask import Flask, render_template, request, redirect, url_for, session
 
 app = Flask(__name__)
 app.secret_key = "super_secret_business_key" 
+app.secret_key = "super_secret_key"
+inventory_db = [
+     {"id": 1, "name": "Office Chair", "quantity": 15, "price": 120.00},
+     {"id": 2, "name": "MacBook Pro", "quantity": 4, "price": 1500.00}
+]
+payroll_db = []
 
 def get_brand():
         industry = session.get('industry', 'default')
@@ -22,7 +28,27 @@ def home():
                 session['industry'] = new_industry
                 return redirect(url_for('home'))
             
-            return render_template('index.html', brand=get_brand())
+            vault_value = 0
+            for item in inventory_db:
+                 vault_value += item['price'] * item['quantity']
+
+            total_payroll = 0
+            for stub in payroll_db:
+                 total_payroll += stub['net_pay']
+
+            open_tickets = 0
+            for ticket in crm_db:
+                 if ticket['status'] == 'Open':
+                      open_tickets += 1
+
+            stats = {
+                 "vault_value": round(vault_value, 2),
+                 "payroll_total": round(total_payroll, 2),
+                 "open_tickets": open_tickets
+            }    
+
+            
+            return render_template('index.html', brand=get_brand(), stats=stats)
 
 
 crm_db = [
