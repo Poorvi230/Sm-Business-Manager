@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>CRM - Business Suite</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <div class="glass-container">
+            <header>
+                <h1>CLIENT RELATIONS</h1>
+                <a href="/" style="color: #111; text-decoration: none; font-weight: bold;">Back to Dashboard</a>
+            </header>
+            <div class="glass-card" style="margin-bottom: 2rem; text-align: left;">
+                <h2 style="margin-top: 0;">Log New Ticket</h2>
+                <form action="/crm" method="POST" style="display: flex; gap: 10px;">
+                    <input type="text" name="customer_name" placeholder="Customer Name" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; flex: 1;">
+                    <input type="text" name="issue_desc" placeholder="Describe the issue..." required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; flex: 2;">
+                    <button type="submit" style="padding: 10px 20px; border-radius: 5px; border: none; background-color: var(--bauhaus-blue); color: white; cursor: pointer;">Submit Ticket</button>
+                </form>
+            </div>
+            <table style="width: 100%; text-align: left; border-collapse: collapse;">
+                <tr style="border-bottom: 2px solid rgba(0,0,0,0.2);">
+                    <th style="padding: 10px;">Ticket #</th>
+                    <th style="padding: 10px;">Customer</th>
+                    <th style="padding: 10px;">Issue</th>
+                    <th style="padding: 10px;">Status</th>
+                </tr>
+                {% for ticket in tickets %}
+                <tr style="border-bottom: 1px solid rgba(0,0,0,0.1);">
+                    <td style="padding: 10px;">#{{ ticket.id }}</td>
+                    <td style="padding: 10px; font-weight: bold">{{ ticket.customer }}</td>
+                    <td style="padding: 10px;">{{ ticket.issue }}</td>
+                   <td style="padding: 10px; font-weight: bold; color: {% if ticket.status == 'Open' %} #E03C31 {% else %} #008F11 {% endif %};">
+                        {{ ticket.status }}
+                          </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </body>
+</html>

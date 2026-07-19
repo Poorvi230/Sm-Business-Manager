@@ -5,7 +5,7 @@
         <title>Payroll - Business Suite</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     </head>
-    <body>
+    <body class="{{ brand.theme }}">
         <div class="glass-container">
             <header>
                 <h1> PAYROLL CALC</h1>
@@ -21,16 +21,20 @@
                     <button type="submit" style="padding: 10px 20px; border-radius: 5px; border: none; background-color: var(--bauhaus-red); color: white; cursor: pointer;">Calculate</button>
                 </form>
             </div>
-            {% if sub %}
+            {% if stub %}
             <div class="glass-card" style="text-align: left; background: rgba(255, 255, 255, 0.4);">
                 <h2 style="margin-top: 0;">Pay Stub for: {{ stub.name }}</h2>
                 <p><strong>Regular Pay:</strong>${{ stub.regular_pay }}</p>
                 <p><strong>Overtime Pay:</strong>${{ stub.overtime_pay }}</p>
                 <hr style="border: 1px solid rgba(0,0,0,0.1);">
-                <h3 style="color: var(--bauhaus-blue);">Total Gross Pay: ${{ stub.total_pay }}</h3>
+                <p><strong>Gross Earnings:</strong> ${{ stub.gross_pay }}</p>
+                <p style="color: #E03C31;"><strong>Estimated Tax Witholding (15%):</strong> -${{ stub.tax }}</p>
+                <hr style="border: 1px solid rgba(0,0,0,0.1)">
+                
+                <h3 style="color: #00509E;">Net Take-Home Pay: ${{ stub.net_pay }}</h3>
             </div>
             {% endif %}
-            
+
         </div>
     </body>
 </html>

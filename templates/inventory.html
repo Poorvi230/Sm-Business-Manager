@@ -5,7 +5,7 @@
     <title>Inventory - Business Suite</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
     </head>
-    <body>
+    <body class="{{ brand.theme }}">
         <div class="glass-container">
             <header>
                 <h1> INVENTORY</h1>
@@ -15,7 +15,7 @@
  <div class="glass-card" style="margin-bottom: 2rem; text-align: left;">
                 <h2 style="margin-top: 0;">Add New Item</h2>
                 <form action="/inventory" method="POST" style="display: flex; gap: 10px;">
-                    <input type="text" name="item_name" placeholder="Item Name" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; flex: 2;">
+                    <input type="text" name="item_name" placeholder="{{ brand.inv_placeholder }}" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; flex: 2;">
                     <input type="number" name="item_qty" placeholder="Quantity" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; flex: 1;">
                     <input type="number" step="0.01" name="item_price" placeholder="Price ($)" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; flex: 1;">
                     <button type="submit" style="padding: 10px 20px; border-radius: 5px; border: none; background-color: var(--bauhaus-blue); color: white; cursor: pointer;">Add Item</button>

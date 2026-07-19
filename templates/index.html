@@ -6,28 +6,35 @@
         <title>Small Business Suite</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
     </head>
-    <body>
+        <body class="{{ brand.theme }}">
 
 <div class="glass-container">
-    <header>
-        <h1>BUSINESS SUITE</h1>
-        <p>Select a module to begin</p>
-    </header>
-
-    <div class="module-grid">
-        <a href="/inventory" class="glass-card">
-            <h2>Inventory</h2>
-            <p>Manage stock and assets</p>
-        </a>
-        <a href="/payroll" class="glass-card">
-            <h2>Payroll</h2>
-            <p>Calculate hours and wages</p>
-        </a>
-        <a href="#" class="glass-card">
-            <h2>CRM</h2>
-            <p>Track customer tickets</p>
-        </a>
+    <div style="text-align: right; margin-bottom: 20px; font-size: 0.9rem;">
+        Switch Workspace:
+        <a href="/?industry=coffee" class="theme-pill">Coffee</a>
+        <a href="/?industry=clothing" class="theme-pill">Retail</a>
+        <a href="/?industry=tech" class="theme-pill">Tech</a>
+        <a href="/" class="theme-pill">Default</a>
     </div>
+    <header>
+       <h1 class="brand-name" style="color: {{ brand.color }}; text-transform: uppercase;">{{ brand.name }}</h1>
+            <p>Select a module to begin</p>
+        </header>
+
+        <div class="module-grid">
+            <a href="/inventory" class="glass-card">
+                <h2>VAULT</h2>
+                <p>Manage stock and assets</p>
+            </a>
+            <a href="/payroll" class="glass-card">
+                <h2>SECURE UR BAG</h2>
+                <p>Calculate hours and wages</p>
+            </a>
+            <a href="/crm" class="glass-card">
+                <h2>SPILL THE TEA</h2>
+                <p>Track customer tickets</p>
+            </a>
+        </div>
 </div>
 
 </body>
