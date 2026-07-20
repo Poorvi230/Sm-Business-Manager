@@ -1,0 +1,11 @@
+{
+    "inventory": [],
+    "payroll": [
+        {
+            "id": 1,
+            "name": "yolo",
+            "net_pay": 4386.0
+        }
+    ],
+    "crm": []
+}

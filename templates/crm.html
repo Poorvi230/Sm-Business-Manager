@@ -6,6 +6,19 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     </head>
     <body class="{{ brand.theme }}">
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div style="position: fixed; top: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px;">
+                {% for message in messages %}
+                <div style="background: #F7D002; border: 3px solid #111; padding: 15px 25px; font-weight: 900; box-shadow: 4px 4px 0px #111; animation: slideIn 0.3s ease;">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+         {% endwith %}
+
         <div class="glass-container">
 
             <header>
@@ -29,12 +42,15 @@
                </tr>
                {% for ticket in tickets %}
                <tr>
-                   <td>#{{ ticket.id }}</td>
-                    <td style="font-weight: bold">{{ ticket.customer }}</td>
-                    <td>{{ ticket.issue }}</td>
-                    <td style="font-weight: bold; color: {% if ticket.status == 'Open' %}#E03C31{% else %}#008F11{% endif %};">
-                        {{ ticket.status }}
-                    </td>
+                <td>#{{ ticket.id }}</td>
+                <td style="font-weight: bold; color: {% if ticket.status == 'Open' %}#E03C31{% else %}#008F11{% endif %};">
+                    {{ ticket.status }}
+
+                    {% if ticket.status == 'Open' %}
+                    <br>
+                    <a href="/resolve/{{ ticket.id }}" style="font-size: 0.8rem; color: #111; text-decoration:underline;">mark resolved ✔✔</a>
+                    {% endif %}
+                </td>
                </tr>
                {% endfor %}            
             </table>
