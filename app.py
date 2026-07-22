@@ -23,6 +23,7 @@ app_data = load_db()
 inventory_db = app_data["inventory"]
 payroll_db = app_data["payroll"]
 crm_db = app_data["crm"]
+order_db = []
 
 def get_brand():
     industry = session.get('industry', 'default')
@@ -55,10 +56,23 @@ def home():
         if ticket['status'] == 'Open':
             open_tickets += 1
 
+    total_revenue = 0
+    for order in order_db:
+        total_revenue += order['revenue']
+
+    revenue_target = 1000.0
+    if total_revenue >= revenue_target:
+        progress_percent = 100
+    else:
+        progress_percent = int((total_revenue / revenue_target) * 100)
+
     stats = {
         "vault_value": round(vault_value, 2),
         "payroll_total": round(total_payroll, 2),
-        "open_tickets": open_tickets
+        "open_tickets": open_tickets,
+        "revenue": round(total_revenue, 2),
+        "progress": progress_percent,
+        "target": revenue_target
     }
 
     return render_template('index.html', brand=get_brand(), stats=stats)
@@ -110,6 +124,9 @@ def payroll():
         pay_stub = {
             "id": len(payroll_db) + 1,
             "name": emp_name,
+            "net_pay": round(net_pay, 2),
+            "overtime_pay": round(overtime_pay, 2),
+            "tax": round(estimated_tax, 2),
             "net_pay": round(net_pay, 2)
         }
         payroll_db.append(pay_stub)
@@ -161,6 +178,42 @@ def print_stub(stub_id):
     
     return render_template('receipt.html', stub=target_stub, brand=get_brand())
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        item_id = int(request.form.get('item_id'))
+        qty_sold = int(request.form.get('qty_sold'))
+
+        for item in inventory_db:
+            if item['id'] == item_id:
+                if item['quantity'] >= qty_sold:
+                    item['quantity'] -= qty_sold
+
+                    revenue = item['price'] * qty_sold
+                    order_db.append({"item": item['name'], "qty": qty_sold, "revenue": revenue})
+
+                    save_db()
+                    flash(f"Cha-Ching! Sold {qty_sold} x {item['name']} for ${revenue}!")
+                else:
+                    flash(f"{item['name']} in vault is dried up 🥀")
+
+                return redirect(url_for('register'))
+
+            return render_template('register.html', items=inventory_db, orders=order_db, brand=get_brand())
+                
+        return render_template('register.html', items=inventory_db, orders=order_db, brand=get_brand())
+
+@app.route('/restock/<int:item_id>/<action>')
+def restock_item(item_id, action):
+    for item in inventory_db:
+        if item['id'] == item_id:
+            if action == 'add':
+                item['quantity'] += 1
+            elif action == 'sub' and item['quantity'] > 0:
+                item['quantity'] -= 1
+    save_db()
+    return redirect(url_for('inventory'))  
+
 if __name__ == '__main__':
     app.run(debug=True)
-
+              

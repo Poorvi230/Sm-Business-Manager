@@ -44,11 +44,15 @@
         </tr>
         {% for item in items %}
         <tr>
-            <td>{{ item.id }}</td>
+            <td>#{{ item.id }}</td>
             <td style="font-weight: bold;">{{ item.name }}</td>
-            <td style="{% if item.quantity < 5 %}color: red; font-weight: 900;{% endif %}">
-                {{ item.quantity }}
-     </td>
+            
+            <td{% if item.quantity < 5 %} style="color: red; font-weight: 900;"{% endif %}>
+                <a href="/restock/{{ item.id }}/sub" style="text-decoration: none; border: 3px solid #111; padding: 2px 8px; background: #fff; color: #111; font-weight: 900; box-shadow: 2px 2px 0px #111;">-</a>
+                <span style="margin: 0 15px; font-size: 1.2rem;">{{ item.quantity }}</span>
+
+                <a href="/restock/{{ item.id }}/add" style="text-decoration: none; border: 3px solid #111; padding: 2px 8px; background: #fff; color: #111; font-weight: 900; box-shadow: 2px 2px 0px #111;">+</a>
+            </td>
      <td>${{ item.price }}</td>
      <td> 
         <a href="/delete/{{ item.id }}" style="color: red; text-decoration: none; font-weight: 900; font-size: 1.2rem;">X</a>

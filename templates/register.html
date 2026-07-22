@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>The Register </title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    </head>
+    <body class="{{ brand.theme }}">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div style="position: fixed; top: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px;">
+            {% for messages in messages %}
+            <div style="background: #F7D002; border: 3px solid #111; padding: 15px 25px; font-weight: 900; box-shadow: 4px 4px 0px #111; animation: slideIn 0.3s ease;">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <div class="glass-container">
+            <header>
+                <h1>The register</h1>
+                <a href="/" style="color: #111; font-weight: bold;">←B2B (Back to base)</a>
+            </header>
+            <div class="glass-card" style="text-align: left;">
+                <h2>ring up the customer</h2>
+                <form action="/register" method="POST" style="display: flex; gap: 10px;">
+                    <select name="item_id" required style="flex: 2; padding: 12px; border: 3px solid var(--border-color); font-family: inherit; font-size: 1rem;">
+                        <option value="">--pick an item --</option>
+                        {% for item in items %}
+                        <option value="{{ item.id }}">{{ item.name }} (${{ item.price }}) - {{ item.quantity }} in stock</option>
+                        {% enfor %}                 
+                    </select>
+                    <input type="number" name="qty_sold" placeholder="qty" required style="flex: 1;">
+                    <button type="submit">cash out 💸</button>
+                </form>
+            </div>
+            <table>
+                <tr>
+                    <th>item sold</th>
+                    <th>qty</th>
+                    <th>revenue $$$</th>
+                </tr>
+                {% for order in orders %}
+                <tr>
+                    <td style="font-weight: bold;">{{ order.item }}</td>
+                    <td>{{ order.qty }}</td>
+                    <td style="color: #008F11; font-weight: 900;">+${{ order.revenue }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+</body>
+</html>

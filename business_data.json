@@ -1,5 +1,12 @@
 {
-    "inventory": [],
+    "inventory": [
+        {
+            "id": 1,
+            "name": "lol",
+            "quantity": 2,
+            "price": 300.0
+        }
+    ],
     "payroll": [
         {
             "id": 1,
