@@ -10,7 +10,7 @@
         {% with messages = get_flashed_messages() %}
         {% if messages %}
         <div style="position: fixed; top: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px;">
-            {% for messages in messages %}
+            {% for message in messages %}
             <div style="background: #F7D002; border: 3px solid #111; padding: 15px 25px; font-weight: 900; box-shadow: 4px 4px 0px #111; animation: slideIn 0.3s ease;">
                 {{ message }}
             </div>
@@ -31,7 +31,7 @@
                         <option value="">--pick an item --</option>
                         {% for item in items %}
                         <option value="{{ item.id }}">{{ item.name }} (${{ item.price }}) - {{ item.quantity }} in stock</option>
-                        {% enfor %}                 
+                        {% endfor %}                 
                     </select>
                     <input type="number" name="qty_sold" placeholder="qty" required style="flex: 1;">
                     <button type="submit">cash out 💸</button>

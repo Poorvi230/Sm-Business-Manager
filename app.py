@@ -198,10 +198,7 @@ def register():
                     flash(f"{item['name']} in vault is dried up 🥀")
 
                 return redirect(url_for('register'))
-
-            return render_template('register.html', items=inventory_db, orders=order_db, brand=get_brand())
-                
-        return render_template('register.html', items=inventory_db, orders=order_db, brand=get_brand())
+    return render_template('register.html', items=inventory_db, orders=order_db, brand=get_brand())              
 
 @app.route('/restock/<int:item_id>/<action>')
 def restock_item(item_id, action):

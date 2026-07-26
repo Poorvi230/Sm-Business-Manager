@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
     </head>
     <body class="{{ brand.theme }}">
+        <div class="splash-screen">
+            <h1 class="splash-text">{{ brand.name }}</h1>
+        </div>
 
         {% with messages= get_flashed_messages() %}
         {% if messages %}
@@ -30,7 +33,7 @@
         <div style="font-size: 0.9rem;">
             <a href="/?industry=coffee" class="theme-pill">Coffee</a>
             <a href="/?industry=clothing" class="theme-pill">Retail</a>
-            <a href="/industry=tech" class="theme-pill">Tech</a>
+            <a href="/?industry=tech" class="theme-pill">Techie</a>
             <a href="/?industry=default" class="theme-pill">Default</a>
             <button onclick="document.body.classList.toggle('dark-mode')" class="theme-pill" style="cursor: pointer; margin-left: 15px;">Toggle Theme</button>      
         </div>

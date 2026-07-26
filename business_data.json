@@ -5,6 +5,12 @@
             "name": "lol",
             "quantity": 2,
             "price": 300.0
+        },
+        {
+            "id": 2,
+            "name": "yolo",
+            "quantity": 3,
+            "price": 23.0
         }
     ],
     "payroll": [
@@ -14,5 +20,12 @@
             "net_pay": 4386.0
         }
     ],
-    "crm": []
+    "crm": [
+        {
+            "id": 1,
+            "customer": "tom",
+            "issue": "bros got issues",
+            "status": "Resolved"
+        }
+    ]
 }
