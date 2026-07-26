@@ -3,13 +3,13 @@
         {
             "id": 1,
             "name": "lol",
-            "quantity": 2,
+            "quantity": 0,
             "price": 300.0
         },
         {
             "id": 2,
             "name": "yolo",
-            "quantity": 3,
+            "quantity": 1,
             "price": 23.0
         }
     ],

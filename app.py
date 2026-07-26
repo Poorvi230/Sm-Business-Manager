@@ -10,12 +10,12 @@ DB_FILE = 'business_data.json'
 
 def load_db():
     if not os.path.exists(DB_FILE):
-        return {"inventory": [], "payroll": [], "crm": []}
+        return {"inventory": [], "payroll": [], "crm": [], "customers": []}
     with open(DB_FILE, 'r') as file:
         return json.load(file)
 
 def save_db():
-    data = {"inventory": inventory_db, "payroll": payroll_db, "crm": crm_db}
+    data = {"inventory": inventory_db, "payroll": payroll_db, "crm": crm_db, "customers": customers_db }
     with open(DB_FILE, 'w') as file:
         json.dump(data, file, indent=4)
 
@@ -23,6 +23,7 @@ app_data = load_db()
 inventory_db = app_data["inventory"]
 payroll_db = app_data["payroll"]
 crm_db = app_data["crm"]
+customers_db = app_data.get("customers", [])
 order_db = []
 
 def get_brand():
