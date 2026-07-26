@@ -184,6 +184,7 @@ def register():
     if request.method == 'POST':
         item_id = int(request.form.get('item_id'))
         qty_sold = int(request.form.get('qty_sold'))
+        vip_id = request.form.get('vip_id')
 
         for item in inventory_db:
             if item['id'] == item_id:
@@ -193,13 +194,19 @@ def register():
                     revenue = item['price'] * qty_sold
                     order_db.append({"item": item['name'], "qty": qty_sold, "revenue": revenue})
 
+                    if vip_id:
+                        for vip in customers_db:
+                            if vip['id'] == int(vip_id):
+                                vip['lifetime_spend'] += revenue
+                                break
+
                     save_db()
                     flash(f"Cha-Ching! Sold {qty_sold} x {item['name']} for ${revenue}!")
                 else:
                     flash(f"{item['name']} in vault is dried up 🥀")
 
                 return redirect(url_for('register'))
-    return render_template('register.html', items=inventory_db, orders=order_db, brand=get_brand())              
+    return render_template('register.html', items=inventory_db, orders=order_db, customers=customers_db, brand=get_brand())              
 
 @app.route('/restock/<int:item_id>/<action>')
 def restock_item(item_id, action):
@@ -210,7 +217,27 @@ def restock_item(item_id, action):
             elif action == 'sub' and item['quantity'] > 0:
                 item['quantity'] -= 1
     save_db()
-    return redirect(url_for('inventory'))  
+    return redirect(url_for('inventory')) 
+
+@app.route('/rolodex', methods=['GET', 'POST'])
+def rolodex():
+    if request.method == 'POST':
+       new_name =  request.form.get('customer_name')
+       new_email = request.form.get('email')
+
+       new_vip = {
+           "id": len(customers_db) + 1,
+           "name": new_name,
+           "email": new_email,
+           "lifetime_spend": 0.0
+       }
+       customers_db.append(new_vip)
+       save_db()
+
+       flash(f"Added Whale: {new_name}")
+       return redirect(url_for('rolodex'))
+
+    return render_template('rolodex.html', customers=customers_db, brand=get_brand())
 
 if __name__ == '__main__':
     app.run(debug=True)

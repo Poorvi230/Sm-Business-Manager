@@ -33,6 +33,12 @@
                         <option value="{{ item.id }}">{{ item.name }} (${{ item.price }}) - {{ item.quantity }} in stock</option>
                         {% endfor %}                 
                     </select>
+                    <select name="vip_id" style="flex: 1.5; padding: 12px; border: 3px solid var(--border-color); font-family: inherit; font-size: 1rem;">
+                        <option value="">--no Whale --</option>
+                        {% for vip in customers %}
+                        <option value="{{ vip.id }}">{{ vip.name }}</option>
+                        {% endfor %}
+                    </select>
                     <input type="number" name="qty_sold" placeholder="qty" required style="flex: 1;">
                     <button type="submit">cash out 💸</button>
                 </form>
