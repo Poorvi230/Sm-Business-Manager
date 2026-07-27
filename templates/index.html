@@ -10,6 +10,13 @@
         <div class="splash-screen">
             <h1 class="splash-text">{{ brand.name }}</h1>
         </div>
+        <script>
+            if (sessionStorage.getItem('whaleSplashPlayed')) {
+                document.querySelector('.splash-screen').style.display = 'none';
+            } else {
+                sessionStorage.setItem('whaleSplashPlayed', 'true');
+            }
+        </script>
 
         {% with messages= get_flashed_messages() %}
         {% if messages %}
