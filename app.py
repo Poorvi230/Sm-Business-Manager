@@ -1,56 +1,20 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import json
 import os
-import requests
 
 app = Flask(__name__)
 app.secret_key = "super_secret_business_key"
 
-# --database---
 DB_FILE = 'business_data.json'
-
-raw_url = os.environ.get("UPSTASH_REDIS_REST_URL") or os.environ.get("KV_REDIS_API_URL") or os.environ.get("KV_REST_API_URL")
-if raw_url:
-    if raw_url.startswith("redis://"):
-        KV_URL = raw_url.replace("redis://", "https://")
-    elif raw_url.startswith("rediss://"):
-        KV_URL = raw_url.replace("rediss://", "https://")
-    else:
-        KV_URL = raw_url
-else:
-    KV_URL = None
-
-KV_TOKEN = os.environ.get("UPSTASH_REDIS_REST_TOKEN") or os.environ.get("KV_REDIS_API_TOKEN") or os.environ.get("KV_REST_API_TOKEN")
 
 
 def load_db():
-    if KV_URL and KV_TOKEN:
-        try:
-            headers = {"Authorization": f"Bearer {KV_TOKEN}"}
-            response = requests.get(f"{KV_URL}/get/business_data", headers=headers, timeout=5)
-            if response.status_code == 200:
-                data = response.json().get("result")
-                if data:
-                    return json.loads(data)
-        except Exception as e:
-            print(f"Database load fallback to local storage: {e}")
-
-    # Local fallback
-    tmp_path = '/tmp/business_data.json'
-    if os.path.exists(tmp_path):
-        try:
-            with open(tmp_path, 'r') as file:
-                return json.load(file)
-        except Exception:
-            pass
-
     if os.path.exists(DB_FILE):
         try:
             with open(DB_FILE, 'r') as file:
                 return json.load(file)
         except Exception:
             pass
-
     return {"inventory": [], "payroll": [], "crm": [], "customers": [], "revenue": 0}
 
 
@@ -62,22 +26,8 @@ def save_db():
         "customers": customers_db,
         "revenue": revenue
     }
-
-    if KV_URL and KV_TOKEN:
-        try:
-            headers = {"Authorization": f"Bearer {KV_TOKEN}"}
-            
-            requests.post(f"{KV_URL}/set/business_data", headers=headers, data=json.dumps(data), timeout=5)
-            return
-        except Exception as e:
-            print(f"Database save fallback to local storage: {e}")
-
-    target_path = '/tmp/business_data.json'
-    try:
-        with open(target_path, 'w') as file:
-            json.dump(data, file, indent=4)
-    except Exception as e:
-        print(f"Local write failed: {e}")
+    with open(DB_FILE, 'w') as file:
+        json.dump(data, file, indent=4)
 
 
 app_data = load_db()
@@ -111,13 +61,11 @@ def home():
         session['industry'] = new_industry
         return redirect(url_for('home'))
 
-    # Calculation stuff
     vault_value = sum(item['price'] * item['quantity'] for item in inventory_db)
     total_payroll = sum(stub.get('net_pay', 0) for stub in payroll_db)
     pending_tickets = sum(1 for ticket in crm_db if ticket.get('status') == 'pending')
     total_customers = len(customers_db)
 
-    # Progress bar for $10k goal
     goal = 10000.0
     progress_percentage = min((revenue / goal) * 100, 100)
 
@@ -192,7 +140,6 @@ def register():
                 sale_amount = selected_item['price'] * quantity
                 revenue += sale_amount
 
-                # tarcking whales
                 customer_found = False
                 for c in customers_db:
                     if c['name'].lower() == customer_name.lower():
@@ -254,7 +201,6 @@ def print_receipt(stub_id):
     return render_template('receipt.html', brand=brand, stub=stub)
 
 
-# -- tea spill n gossip logging--
 @app.route('/crm', methods=['GET', 'POST'])
 def crm():
     global crm_db
@@ -293,7 +239,6 @@ def resolve_ticket(ticket_id):
 @app.route('/customers')
 def customers():
     brand = get_brand()
-    # sort by who spends most
     whales = sorted(customers_db, key=lambda x: x.get('total_spent', 0), reverse=True)
     return render_template('customers.html', brand=brand, customers=whales)
 
