@@ -9,7 +9,7 @@
         {
             "id": 2,
             "name": "yolo",
-            "quantity": 1,
+            "quantity": 0,
             "price": 23.0
         }
     ],
@@ -27,5 +27,6 @@
             "issue": "bros got issues",
             "status": "Resolved"
         }
-    ]
+    ],
+    "customers": []
 }

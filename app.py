@@ -8,16 +8,33 @@ app.secret_key = "super_secret_business_key"
 # --database---
 DB_FILE = 'business_data.json'
 
+KV_URL = os.environ.get("KV_REDIS_API_URL")
+KV_TOKEN = os.environ.get("LV_REDIS_API_TOKEN")
+
 def load_db():
-    if not os.path.exists(DB_FILE):
-        return {"inventory": [], "payroll": [], "crm": [], "customers": []}
-    with open(DB_FILE, 'r') as file:
-        return json.load(file)
+    if KV_URL and KV_TOKEN:
+        headers = {"Authorization": f"Bearer {KV_TOKEN}"}
+        response = requests.get("{KV_URL}/get/business_data", headers=headers)
+
+        if response.status_code == 200:
+            data = response.json().get("result")
+            if data: 
+                return json.loads(data)
+
+    if os.path.exists(DB_FILE):
+        with open(DB_FILE, 'r') as file:
+            return json.load(file)  
+    return {"inventory": [], "payroll": [], "crm": [], "customers": []}
 
 def save_db():
-    data = {"inventory": inventory_db, "payroll": payroll_db, "crm": crm_db, "customers": customers_db }
-    with open(DB_FILE, 'w') as file:
-        json.dump(data, file, indent=4)
+    data = {"inventory": inventory_db, "payroll": payroll_db, "crm": crm_db,"customers": customers_db}
+
+    if KV_URL and KV_TOKEN:
+       headers = {"Authorization": f"Bearer {KV_TOKEN}"}
+       request.post(f"{KV_URL}/set/business_data", headers=headers, json=json.dumps(data))
+    else:
+        with open(DB_FILE, 'w') as file:
+             json.dump(data, file, indent=4)
 
 app_data = load_db()
 inventory_db = app_data["inventory"]
