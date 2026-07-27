@@ -43,6 +43,8 @@
                {% for ticket in tickets %}
                <tr>
                 <td>#{{ ticket.id }}</td>
+                <td style="font-weight: bold;">{{ ticket.customer }}</td>
+                <td>{{ ticket.issue }}</td>
                 <td style="font-weight: bold; color: {% if ticket.status == 'Open' %}#E03C31{% else %}#008F11{% endif %};">
                     {{ ticket.status }}
 

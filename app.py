@@ -15,7 +15,7 @@ def load_db():
                 return json.load(file)
         except Exception:
             pass
-    return {"inventory": [], "payroll": [], "crm": [], "customers": [], "revenue": 0}
+    return {"inventory": [], "payroll": [], "crm": [], "customers": [], "revenue": 0, "orders": []}
 
 
 def save_db():
@@ -24,7 +24,8 @@ def save_db():
         "payroll": payroll_db,
         "crm": crm_db,
         "customers": customers_db,
-        "revenue": revenue
+        "revenue": revenue,
+        "orders": order_db
     }
     with open(DB_FILE, 'w') as file:
         json.dump(data, file, indent=4)
@@ -33,13 +34,14 @@ def save_db():
 app_data = load_db()
 if not isinstance(app_data, dict):
     print("app_data came back weird (not a dict), resetting to empty db")
-    app_data = {"inventory": [], "payroll": [], "crm": [], "customers": [], "revenue": 0}
+    app_data = {"inventory": [], "payroll": [], "crm": [], "customers": [], "revenue": 0, "orders": []}
 
 inventory_db = app_data.get("inventory", [])
 payroll_db = app_data.get("payroll", [])
 crm_db = app_data.get("crm", [])
 customers_db = app_data.get("customers", [])
 revenue = app_data.get("revenue", 0)
+order_db = app_data.get("orders", [])
 
 
 def get_brand():
@@ -63,35 +65,35 @@ def home():
 
     vault_value = sum(item['price'] * item['quantity'] for item in inventory_db)
     total_payroll = sum(stub.get('net_pay', 0) for stub in payroll_db)
-    pending_tickets = sum(1 for ticket in crm_db if ticket.get('status') == 'pending')
+    pending_tickets = sum(1 for ticket in crm_db if ticket.get('status') == 'Open')
     total_customers = len(customers_db)
 
     goal = 10000.0
     progress_percentage = min((revenue / goal) * 100, 100)
 
+    stats = {
+        "vault_value": round(vault_value, 2),
+        "payroll_total": round(total_payroll, 2),
+        "open_tickets": pending_tickets,
+        "revenue": round(revenue, 2),
+        "progress": progress_percentage,
+        "target": goal
+    }
+
     brand = get_brand()
 
-    return render_template(
-        'index.html',
-        brand=brand,
-        vault_value=vault_value,
-        total_payroll=total_payroll,
-        pending_tickets=pending_tickets,
-        total_customers=total_customers,
-        revenue=revenue,
-        progress_percentage=progress_percentage
-    )
+    return render_template('index.html', brand=brand, stats=stats)
 
 
-@app.route('/vault', methods=['GET', 'POST'])
+@app.route('/inventory', methods=['GET', 'POST'])
 def vault():
     global inventory_db
     brand = get_brand()
 
     if request.method == 'POST':
-        name = request.form.get('name')
-        price = float(request.form.get('price', 0))
-        quantity = int(request.form.get('quantity', 0))
+        name = request.form.get('item_name')
+        price = float(request.form.get('item_price', 0))
+        quantity = int(request.form.get('item_qty', 0))
 
         new_id = max([item['id'] for item in inventory_db], default=0) + 1
         inventory_db.append({
@@ -104,11 +106,18 @@ def vault():
         flash(f"Successfully added {name} to inventory!", "success")
         return redirect(url_for('vault'))
 
-    return render_template('vault.html', brand=brand, inventory=inventory_db)
+    return render_template('inventory.html', brand=brand, items=inventory_db)
+
+@app.route('/delete/<int:item_id>')
+def delete_item(item_id):
+    global inventory_db
+    inventory_db[:] = [item for item in inventory_db if item['id'] != item_id]
+    save_db()
+    flash("Item permanently deleted.", "success")
+    return redirect(url_for('vault'))
 
 
 @app.route('/restock/<int:item_id>/<string:action>')
-@app.route('/vault/adjust/<int:item_id>/<string:action>')
 def adjust_stock(item_id, action):
     global inventory_db
     for item in inventory_db:
@@ -130,7 +139,7 @@ def register():
     if request.method == 'POST':
         item_id = int(request.form.get('item_id', 0))
         customer_name = request.form.get('customer_name', 'Guest')
-        quantity = int(request.form.get('quantity', 1))
+        quantity = int(request.form.get('qty_sold', 1))
 
         selected_item = next((item for item in inventory_db if item['id'] == item_id), None)
 
@@ -153,6 +162,7 @@ def register():
                         "total_spent": sale_amount
                     })
 
+                order_db.append({"item": selected_item['name'], "qty": quantity, "revenue": sale_amount})
                 save_db()
                 flash(f"Sold {quantity}x {selected_item['name']}! +${sale_amount} secured.", "success")
             else:
@@ -160,7 +170,7 @@ def register():
 
         return redirect(url_for('register'))
 
-    return render_template('register.html', brand=brand, inventory=inventory_db)
+    return render_template('register.html', brand=brand, items=inventory_db, customers=customers_db, orders=order_db)
 
 
 @app.route('/payroll', methods=['GET', 'POST'])
@@ -169,7 +179,7 @@ def payroll():
     brand = get_brand()
 
     if request.method == 'POST':
-        name = request.form.get('name')
+        name = request.form.get('emp_name')
         hours = float(request.form.get('hours', 0))
         rate = float(request.form.get('rate', 0))
         bonus = float(request.form.get('bonus', 0))
@@ -188,10 +198,10 @@ def payroll():
         flash(f"Logged pay stub for {name}! Net: ${net_pay}", "success")
         return redirect(url_for('payroll'))
 
-    return render_template('payroll.html', brand=brand, payroll=payroll_db)
+    return render_template('payroll.html', brand=brand, history=payroll_db)
 
 
-@app.route('/payroll/receipt/<int:stub_id>')
+@app.route('/print_stub/<int:stub_id>')
 def print_receipt(stub_id):
     brand = get_brand()
     stub = next((s for s in payroll_db if s['id'] == stub_id), None)
@@ -207,15 +217,15 @@ def crm():
     brand = get_brand()
 
     if request.method == 'POST':
-        customer = request.form.get('customer')
-        complaint = request.form.get('complaint')
+        customer = request.form.get('customer_name')
+        complaint = request.form.get('issue_desc')
 
         new_id = max([t['id'] for t in crm_db], default=0) + 1
         crm_db.append({
             "id": new_id,
             "customer": customer,
-            "complaint": complaint,
-            "status": "pending"
+            "issue": complaint,
+            "status": "Open"
         })
         save_db()
         flash("Logged the issue! We will deal with it.", "success")
@@ -224,23 +234,23 @@ def crm():
     return render_template('crm.html', brand=brand, tickets=crm_db)
 
 
-@app.route('/crm/resolve/<int:ticket_id>')
+@app.route('/resolve/<int:ticket_id>')
 def resolve_ticket(ticket_id):
     global crm_db
     for ticket in crm_db:
         if ticket['id'] == ticket_id:
-            ticket['status'] = 'resolved'
+            ticket['status'] = 'Resolved'
             break
     save_db()
     flash("Ticket resolved!", "success")
     return redirect(url_for('crm'))
 
 
-@app.route('/customers')
+@app.route('/rolodex')
 def customers():
     brand = get_brand()
     whales = sorted(customers_db, key=lambda x: x.get('total_spent', 0), reverse=True)
-    return render_template('customers.html', brand=brand, customers=whales)
+    return render_template('rolodex.html', brand=brand, customers=whales)
 
 
 if __name__ == '__main__':
