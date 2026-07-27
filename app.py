@@ -35,6 +35,14 @@ def load_db():
             print(f"Database load fallback to local storage: {e}")
 
     # Local fallback
+    tmp_path = '/tmp/business_data.json'
+    if os.path.exists(tmp_path):
+        try:
+            with open(tmp_path, 'r') as file:
+                return json.load(file)
+        except Exception:
+            pass
+
     if os.path.exists(DB_FILE):
         try:
             with open(DB_FILE, 'r') as file:
@@ -60,8 +68,12 @@ def save_db():
         except Exception as e:
             print(f"Database save fallback to local storage: {e}")
             
-    with open(DB_FILE, 'w') as file:
-        json.dump(data, file, indent=4)
+    target_path = '/tmp/business_data.json' if os.environ.get("VERCEL") else DB_FILE
+    try:
+        with open(target_path, 'w') as file:
+            json.dump(data, file, indent=4)
+    except Exception as e:
+        print(f"Local write failed: {e}")
 
 app_data = load_db()
 inventory_db = app_data.get("inventory", [])
@@ -133,14 +145,15 @@ def vault():
         
     return render_template('vault.html', brand=brand, inventory=inventory_db)
 
+@app.route('/restock/<int:item_id>/<string:action>')
 @app.route('/vault/adjust/<int:item_id>/<string:action>')
 def adjust_stock(item_id, action):
     global inventory_db
     for item in inventory_db:
         if item['id'] == item_id:
-            if action == 'increase':
+            if action in ['add', 'increase', 'plus']:
                 item['quantity'] += 1
-            elif action == 'decrease' and item['quantity'] > 0:
+            elif action in ['remove', 'decrease', 'sub', 'minus'] and item['quantity'] > 0:
                 item['quantity'] -= 1
             break
     save_db()
@@ -222,7 +235,7 @@ def print_receipt(stub_id):
         return redirect(url_for('payroll'))
     return render_template('receipt.html', brand=brand, stub=stub)
 
-# -- tea spill, gossip logging--
+# -- tea spill n gossip logging--
 @app.route('/crm', methods=['GET', 'POST'])
 def crm():
     global crm_db
