@@ -6,23 +6,29 @@ I looked at some business managing apps and ERP software and they were so boring
 
 for graphic style I went with neobrutalism cuz it looks so cool. Thick black borders, shadows, bright colors and comic-book type. Specially the splash-screen ceiling that drops from the above when u enter, my favorite.
 
-[![ui2](ui2.png)](ui2.png)
+[![ui1](ui1.png)](ui1.png)
 
 ## all the modules
 
 VAULT - inventory management. You can add items, trach stock, adjust quantities with the +/- buttons. It also shows in red if your inventory is below 5.
+
 REGISTER - your sales area. can pick and item from dropdown and cash out. It's getting tracked live and gets added to the dashboard.
+
 SECURE UR BAG - payroll, how much to pay each employee, also has a printable receipt feature.
+
 SPILL THE TEA - crm basically, can log customer complaints as tickets and mark them resolved when dealt with. all the gossip is here, lol.
+
 VIP ROLODEX - track ur highest paying customers(whales)
 
-[![ui3](ui3.png)](ui3.png)
+[![ui3](ui2.png)](ui2.png)
 
 ## themes
 
 I just had this itch that it should be having personalized sections acc to the themes, which is future work, for now themes is just switched colors- coffee shop, retail or techies.
 
 Dashboard  has a live revenue tracker with a progress bar for $1k goal
+
+[![ui3](ui3.png)](ui3.png)
 
 ## how its built
 
@@ -33,7 +39,7 @@ Dashboard  has a live revenue tracker with a progress bar for $1k goal
 
 ## ai usage
 
-helped in debugging, splash screen css animation and  figure out json save/load pattern.
+helped in debugging, splash screen css animation, vercel setup and figure out json save/load pattern.
 
 ## license
 
