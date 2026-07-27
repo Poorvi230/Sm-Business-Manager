@@ -9,7 +9,7 @@ app.secret_key = "super_secret_business_key"
 # --database---
 DB_FILE = 'business_data.json'
 
-raw_url = os.environ.get("KV_REDIS_API_URL") or os.environ.get("KV_REST_API_URL")
+raw_url = os.environ.get("UPSTASH_REDIS_REST_URL") or os.environ.get("KV_REDIS_API_URL") or os.environ.get("KV_REST_API_URL")
 if raw_url:
     if raw_url.startswith("redis://"):
         KV_URL = raw_url.replace("redis://", "https://")
@@ -20,7 +20,7 @@ if raw_url:
 else:
     KV_URL = None
 
-KV_TOKEN = os.environ.get("KV_REDIS_API_TOKEN") or os.environ.get("KV_REST_API_TOKEN")
+KV_TOKEN = os.environ.get("UPSTASH_REDIS_REST_TOKEN") or os.environ.get("KV_REDIS_API_TOKEN") or os.environ.get("KV_REST_API_TOKEN")
 
 def load_db():
     if KV_URL and KV_TOKEN:
