@@ -72,7 +72,7 @@ def save_db():
         except Exception as e:
             print(f"Database save fallback to local storage: {e}")
 
-    target_path = '/tmp/business_data.json' if os.environ.get("VERCEL") else DB_FILE
+    target_path = '/tmp/business_data.json'
     try:
         with open(target_path, 'w') as file:
             json.dump(data, file, indent=4)
