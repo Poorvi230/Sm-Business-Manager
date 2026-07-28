@@ -49,6 +49,7 @@ helped in debugging, splash screen css animation, vercel setup(did not work out)
 You can clone the repo, install python, then:
 
 pip install -r requirements.txt
+
 python app.py
 
 it runs on localhost:5000 by default. fork it, mess around, send a pull request if you fix something or did something cool.
