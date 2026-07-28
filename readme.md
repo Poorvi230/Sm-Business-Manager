@@ -44,6 +44,15 @@ Dashboard  has a live revenue tracker with a progress bar for $10k goal.
 
 helped in debugging, splash screen css animation, vercel setup(did not work out) and figure out json save/load pattern.
 
+## contribute
+
+You can clone the repo, install python, then:
+
+pip install -r requirements.txt
+python app.py
+
+it runs on localhost:5000 by default. fork it, mess around, send a pull request if you fix something or did something cool.
+
 ## license
 
 MIT
