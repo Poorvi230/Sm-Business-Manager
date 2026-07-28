@@ -5,7 +5,7 @@ import os
 app = Flask(__name__)
 app.secret_key = "super_secret_business_key"
 
-DB_FILE = 'business_data.json'
+DB_FILE = '/app/data/business_data.json' if os.path.exists('/app/data') else 'business_data.json'
 
 
 def load_db():
