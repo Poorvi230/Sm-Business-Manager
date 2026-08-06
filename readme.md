@@ -13,7 +13,7 @@ for graphic style I went with neobrutalism cuz it looks cool. Thick black border
 
 ## all the modules
 
-VAULT - inventory management. You can add items, trach stock, adjust quantities with the +/- buttons. It also shows in red if your inventory is below 5.
+VAULT - inventory management. You can add items, track stock, adjust quantities with the +/- buttons. It also shows in red if your inventory is below 5.
 
 REGISTER - your sales area. can pick and item from dropdown and cash out. It's getting tracked live and gets added to the dashboard.
 
@@ -22,6 +22,8 @@ SECURE UR BAG - payroll, how much to pay each employee, also has a printable rec
 SPILL THE TEA - crm basically, can log customer complaints as tickets and mark them resolved when dealt with. all the gossip is here, lol.
 
 VIP ROLODEX - track ur highest paying customers(whales)
+
+SUMMARY PIE CHART - so I thought that it should have a summary, like a graph or a pie chart, so I added one. Shaped like a donut and grows out when u hover over it.
 
 [![ui3](ui2.png)](ui2.png)
 
@@ -37,7 +39,7 @@ Dashboard  has a live revenue tracker with a progress bar for $10k goal.
 
 - py / flask for backend
 - html / css
-- json for storgae, saves everything locally.
+- json for storage, saves everything locally.
 - css animations for the splash screen
 
 ## ai usage
