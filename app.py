@@ -3,7 +3,7 @@ import json
 import os
 
 app = Flask(__name__)
-app.secret_key = "super_secret_business_key"
+app.secret_key = os.environ.get("SECRET_KEY", "dev_fallback_key")
 
 DB_FILE = '/app/data/business_data.json' if os.path.exists('/app/data') else 'business_data.json'
 
