@@ -71,13 +71,24 @@ def home():
     goal = 10000.0
     progress_percentage = min((revenue / goal) * 100, 100)
 
+    total = vault_value + revenue + total_payroll
+    if total == 0:
+        total = 1
+
+    vault_pct = int((vault_value / total) * 100)
+    rev_pct = int((revenue / total) * 100)
+    pay_pct = int((total_payroll / total) * 100)
+
     stats = {
         "vault_value": round(vault_value, 2),
         "payroll_total": round(total_payroll, 2),
         "open_tickets": pending_tickets,
         "revenue": round(revenue, 2),
         "progress": progress_percentage,
-        "target": goal
+        "target": goal,
+        "vault_pct": vault_pct,
+        "rev_pct": rev_pct,
+        "pay_pct": pay_pct,
     }
 
     brand = get_brand()
@@ -252,6 +263,23 @@ def customers():
     whales = sorted(customers_db, key=lambda x: x.get('total_spent', 0), reverse=True)
     return render_template('rolodex.html', brand=brand, customers=whales)
 
+@app.route('/summary')
+def summary():
+    brand = get_brand()
+
+    vault_value = sum(item['price'] * item['quantity'] for item in inventory_db)
+    total_payroll = sum(stub.get('net_pay', 0) for stub in payroll_db)
+
+    total = vault_value + revenue + total_payroll
+    if total == 0:
+        total = 1
+
+    vault_pct = int((vault_value / total) * 100)
+    rev_pct = int((revenue / total) * 100)
+    pay_pct = int((total_payroll / total) * 100)
+
+    return render_template('summary.html', brand=brand, vault_pct=vault_pct, rev_pct=rev_pct, pay_pct=pay_pct, vault_raw=vault_value, rev_raw=revenue, pay_raw=total_payroll)
 
 if __name__ == '__main__':
     app.run(debug=True)
+
