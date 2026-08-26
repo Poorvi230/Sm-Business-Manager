@@ -3,7 +3,7 @@
 I looked at some business managing apps and ERP software and they were quite boring to look at, (unless you've got some crazy zeros flashing on the dashboard). So giving it a twist and vibe is mandatory, for which I built this, inspired by my polka dot dress; this small business suite has personality. Without any fees or corporate bloat ofc.
 So it's a one-place dashboard for someone running a small business, like a local cafe, retail shop, or a freelance setup. inventory, sales, payroll, and customer management all in one spot. data lives locally for now. 
 
-Try it here - https://sm-business-manager-production-5532.up.railway.app/
+Try it here - https://sm-business-manager-pi.vercel.app/
 
 ## Vibe
 
